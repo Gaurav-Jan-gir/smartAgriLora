@@ -1,5 +1,6 @@
 struct SensorData {
-    float temperature;  // Temperature in degrees Celsius
-    float humidity;     // Humidity in percentage
-    float soilMoisture; // Soil moisture in percentage
+    float temperature = -100.f;  // Temperature in degrees Celsius
+    float humidity = -100.f;     // Humidity in percentage
+    float soilMoisture = -100.f; // Soil moisture in percentage
+    // Default values set to -100 to indicate uninitialized state
 };
