@@ -15,7 +15,7 @@ class ConfigManager{
             param.fr = 868E6;
             param.bw = 125E3;
         }
-        void getOptimalParamsForRange(int range);
+        LoraParams getOptimalParamsForRange(int range);
         void setParams(LoraParams p){param = p;}
         LoraParams getParams(){return param;}
         void setThresholds(Thresholds th){thresholds = th;}

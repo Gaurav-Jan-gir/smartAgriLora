@@ -1,29 +1,44 @@
-#include "headers/local_node.h"
+#include "local_node.h"
+#include "lora_receiver.h"
 
-LocalNode::getSensorData(){
-    sensorData = get_data();
+void LocalNode::sendMessage(){
+    
 }
 
-LocalNode::sendMessage(){
-    getSensorData();
-    LoraParams params = configManager.getOptimalParamsForRange(range);
-    configManager.setParams(params);
-    sender.sendData(sensorData, params);
-}
+void LocalNode::receiveMessage() {
+    uint16_t* message = receiver.receiveMessage(localAddress);
+    if (!message) return;
 
-LocalNode::receiveMessage(){
-    int receiveType = receiver.getReceiveType();
-    if (receiveType == LoraReceiver::DATA) {
-        SensorData data = receiver.receiveData();
-        // Local Nodes Don't receive data, ignore it
-    } else if (receiveType == LoraReceiver::CONFIG) {
-        LoraParams params = receiver.receiveConfig();
-        configManager.setParams(params);
-    } else if (receiveType == LoraReceiver::THRESHOLDS) {
-        Thresholds th = receiver.receiveData();
-        configManager.setThresholds(th);
-    } else if (receiveType == LoraReceiver::SENDFAIL) {
-        range = range * 1.1;
-        sendMessage();
+    LoraReceiver::MessageType messageType = receiver.getMessageType();
+    if (messageType == LoraReceiver::NONE) return;
+
+    switch (messageType) {
+        case LoraReceiver::DATA:
+            // Ignored by local node
+            break;
+
+        case LoraReceiver::CONFIG: {
+            LoraParams params = receiver.decodeParams(message);
+            configManager.setParams(params);
+            break;
+        }
+
+        case LoraReceiver::THRESHOLDS: {
+            Thresholds th = receiver.decodeThresholds(message);
+            configManager.setThresholds(th);
+            break;
+        }
+
+        case LoraReceiver::SENDFAIL: {
+            range *= 1.1f;
+            LoraParams newParams = configManager.getOptimalParamsForRange(range);
+            configManager.setParams(newParams);
+            break;
+        }
+
+        default:
+            break;
     }
+
+    // delete[] message; // only if dynamically allocated
 }

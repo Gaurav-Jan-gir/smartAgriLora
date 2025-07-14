@@ -1,6 +1,6 @@
-#include "headers/data_collector.h"
+#include "data_collector.h"
 
-SensorData get_data() {
+SensorData get_sensor_data() {
     SensorData data;
     data.temperature = dht.readTemperature();     // °C
     data.humidity = dht.readHumidity();           // %

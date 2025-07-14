@@ -8,4 +8,4 @@
 
 DHT dht(DHTPIN, DHTTYPE); // DHT sensor object
 
-SensorData getData();
+SensorData get_sensor_data();

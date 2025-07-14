@@ -12,6 +12,7 @@ class LocalNode{
         ConfigManager configManager;
         SensorData sensorData;
         int range;
+        const byte localAddress = 0x03;
     public:
         LocalNode() : receiver(), sender(), configManager() , range(0) {
             sensorData.temperature = 0.0f;
@@ -21,4 +22,4 @@ class LocalNode{
         void sendMessage();
         void receiveMessage();
         void getSensorData();
-}
+};
