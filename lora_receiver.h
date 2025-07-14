@@ -5,6 +5,7 @@
 #include "sensor_data.h"
 #include "thresholds.h"
 #include "lora_params.h"
+#include "payload_data.h"
 #include "LoRa.h"
 
 #ifndef BROADCAST_ADDRESS
@@ -26,12 +27,12 @@ private:
     MessageType messageType = NONE;
 
 public:
-    uint16_t* receiveMessage(byte &localAddress, LoRaClass &lora);
+    PayloadData receiveMessage(const byte &localAddress, LoRaClass &lora);
     MessageType getMessageType() const { return messageType; }
-    SensorData decodeData(uint16_t* message);
-    Thresholds decodeThresholds(uint16_t* message);
-    LoraParams decodeParams(uint16_t* message);
-    bool decodeFail(uint16_t* message);
+    SensorData decodeData(const PayloadData& payload);
+    Thresholds decodeThresholds(const PayloadData& payload);
+    LoraParams decodeParams(const PayloadData& payload);
+    bool decodeFail(const PayloadData& payload);
 };
 
 #endif
