@@ -2,12 +2,13 @@
 #include "lora_receiver.h"
 
 void LocalNode::sendMessage(){
-    
+    get_sensor_data();
+    sender.sendData(sensorData, localAddress, lora);
 }
 
 void LocalNode::receiveMessage() {
-    uint16_t* message = receiver.receiveMessage(localAddress);
-    if (!message) return;
+    PayloadData message = receiver.receiveMessage(localAddress, lora);
+    if (!message.data) return;
 
     LoraReceiver::MessageType messageType = receiver.getMessageType();
     if (messageType == LoraReceiver::NONE) return;
@@ -25,6 +26,7 @@ void LocalNode::receiveMessage() {
 
         case LoraReceiver::THRESHOLDS: {
             Thresholds th = receiver.decodeThresholds(message);
+            configManager.mergeThresholds(th);
             configManager.setThresholds(th);
             break;
         }
