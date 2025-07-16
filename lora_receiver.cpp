@@ -63,12 +63,12 @@ Thresholds LoraReceiver::decodeThresholds(const PayloadData& payload){
         float value = (message >> 3) / 10.0f; // Next bits for value, divided by 10 for precision
 
         switch (type) {
-            case 1: th.lowTemperature = value; break;
-            case 2: th.highTemperature = value; break;
-            case 3: th.lowHumidity = value; break;
-            case 4: th.highHumidity = value; break;
-            case 5: th.lowSoilMoisture = value; break;
-            case 6: th.highSoilMoisture = value; break;
+            case 1: th.lowTemperature = value/10.0f - 40.0f; break;
+            case 2: th.highTemperature = value/10.0f - 40.0f; break;
+            case 3: th.lowHumidity = value/10.0f; break;
+            case 4: th.highHumidity = value/10.0f; break;
+            case 5: th.lowSoilMoisture = value/10.0f; break;
+            case 6: th.highSoilMoisture = value/10.0f; break;
             default: break; // Ignore unknown types
         }
     }
