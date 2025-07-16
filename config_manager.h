@@ -20,5 +20,6 @@ class ConfigManager{
         LoraParams getParams(){return param;}
         void setThresholds(Thresholds th){thresholds = th;}
         Thresholds getThresholds(){return thresholds;}
+        void mergeThresholds(Thresholds th);
 
 };
