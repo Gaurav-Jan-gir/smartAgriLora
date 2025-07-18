@@ -30,6 +30,13 @@ PayloadData LoraReceiver::receiveMessage(const byte &local_address, LoRaClass &l
 
     // Calculate remaining payload
     int payloadBytes = packetSize - 3;
+    
+    // Validate payload: must be even number of bytes and > 0
+    if (payloadBytes <= 0 || payloadBytes % 2 != 0) {
+        messageType = MessageType::NONE;
+        return {nullptr, 0};
+    }
+    
     int payloadWords = payloadBytes / 2;
 
     // Allocate payload buffer
@@ -41,58 +48,36 @@ PayloadData LoraReceiver::receiveMessage(const byte &local_address, LoRaClass &l
     return {payload, payloadWords};
 }
 
-SensorData LoraReceiver::decodeData(const PayloadData& payload) {
-    SensorData data;
-     if (payload.size < 2) return data; 
+void LoraReceiver::decodeData(const PayloadData& payload, SensorData& data) {
+    if (payload.size < 2) return;
     uint32_t compressedMessage = ((uint32_t)payload.data[1] << 16) | payload.data[0];
     data.temperature = compressedMessage & 0x7FF;
     data.humidity = (compressedMessage >> 11) & 0x3FF;
     data.soilMoisture = (compressedMessage >> 21) & 0x3FF;
     data.temperature = (data.temperature - 400) / 10.0f; // Convert to Celsius
     data.humidity = data.humidity / 10.0f; // Convert to percentage
-    data.soilMoisture = (data.soilMoisture * 100.0f) / 1023.0f; // Inverted value
-    return data;
+    // Keep soil moisture as raw ADC value (0-1023) for now
+    // Will be converted to percentage at central node for user display
 }
 
-Thresholds LoraReceiver::decodeThresholds(const PayloadData& payload){
-    Thresholds th;
-    if (payload.size < 1) return th; // Not enough data
-    for (int i = 0; i < payload.size; i++) {
-        uint16_t message = payload.data[i];
-        uint8_t type = message & 0x07; // Last 3 bits for type
-        float value = (message >> 3) / 10.0f; // Next bits for value, divided by 10 for precision
-
-        switch (type) {
-            case 1: th.lowTemperature = value/10.0f - 40.0f; break;
-            case 2: th.highTemperature = value/10.0f - 40.0f; break;
-            case 3: th.lowHumidity = value/10.0f; break;
-            case 4: th.highHumidity = value/10.0f; break;
-            case 5: th.lowSoilMoisture = value/10.0f; break;
-            case 6: th.highSoilMoisture = value/10.0f; break;
-            default: break; // Ignore unknown types
-        }
-    }
-    return th;  
-
+void LoraReceiver::decodeThresholds(const PayloadData& payload, Thresholds& thresholds) {
+    if (payload.size < 6) return;
+    thresholds.lowTemperature = (int16_t)(payload.data[0] & 0x7FF) / 10.0f - 40.0f; // Convert to Celsius
+    thresholds.highTemperature = (int16_t)(payload.data[1] & 0x7FF) / 10.0f - 40.0f; // Convert to Celsius
+    thresholds.lowHumidity = (uint16_t)(payload.data[2] & 0x3FF) / 10.0f; // Convert to percentage
+    thresholds.highHumidity = (uint16_t)(payload.data[3] & 0x3FF) / 10.0f; // Convert to percentage
+    thresholds.lowSoilMoisture = (uint16_t)(payload.data[4] & 0x3FF) / 10.0f; // Convert to raw ADC value
+    thresholds.highSoilMoisture = (uint16_t)(payload.data[5] & 0x3FF) / 10.0f; // Convert to raw ADC value
 }
 
-LoraParams LoraReceiver::decodeParams(const PayloadData& payload) {
-    LoraParams params;
-    for(int i = 0; i < payload.size; i++) {
-        uint16_t message = payload.data[i];
-        uint8_t type = message & 0x07; // Last 3 bits for type
-        message >>= 3; // Shift to get the actual value
-        switch (type) {
-            case 0: params.tp = message; break; // Transmission power
-            case 1: params.sf = message; break; // Spreading factor
-            case 2: params.cr = message; break; // Coding rate
-            case 3: params.pl = message; break; // Preamble length
-            case 4: params.sw = message; break; // Sync word
-            case 5: params.fr = message; break; // Frequency
-            case 6: params.bw = message; break; // Bandwidth
-            default: break; // Ignore additional data
-        }
-    }
-    return params;
+void LoraReceiver::decodeParams(const PayloadData& payload, LoraParams& params) {
+    if (payload.size < 5) return; // Minimum size for params
+    params.tp = payload.data[0] & 0xFF; // Transmission power
+    params.sf = payload.data[0] >> 8; // Spreading factor
+    params.cr = payload.data[1] & 0xFF; // Coding rate
+    params.sw = payload.data[1] >> 8; // Sync word
+    params.pl = payload.data[2];
+    params.fr = payload.data[3] * 1e6; // Convert MHz to Hz
+    params.bw = payload.data[4] * 1e3; // Convert kHz to Hz
 }
 

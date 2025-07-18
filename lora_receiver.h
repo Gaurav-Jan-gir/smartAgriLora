@@ -29,9 +29,9 @@ private:
 public:
     PayloadData receiveMessage(const byte &localAddress, LoRaClass &lora);
     MessageType getMessageType() const { return messageType; }
-    SensorData decodeData(const PayloadData& payload);
-    Thresholds decodeThresholds(const PayloadData& payload);
-    LoraParams decodeParams(const PayloadData& payload);
+    void decodeData(const PayloadData& payload, SensorData& data);      // Use reference parameter
+    void decodeThresholds(const PayloadData& payload, Thresholds& th);  // Use reference parameter
+    void decodeParams(const PayloadData& payload, LoraParams& params);  // Use reference parameter
     bool decodeFail(const PayloadData& payload);
 };
 
