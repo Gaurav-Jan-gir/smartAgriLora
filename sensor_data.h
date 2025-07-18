@@ -1,6 +1,7 @@
 struct SensorData {
-    float temperature = -100.f;  // Temperature in degrees Celsius
-    float humidity = -100.f;     // Humidity in percentage
-    float soilMoisture = -100.f; // Soil moisture in percentage
-    // Default values set to -100 to indicate uninitialized state
+    float temperature;  // Temperature in degrees Celsius
+    float humidity;     // Humidity in percentage
+    float soilMoisture; // Soil moisture as raw ADC value (0-1023)
+    // Note: soilMoisture kept as raw value for compression efficiency
+    // Will be converted to percentage at central node for display
 };
