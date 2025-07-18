@@ -3,7 +3,7 @@ struct LoraParams {
     int tp = -1;       // Transmission power
     int sf = -1;       // Spreading factor
     int cr = -1;       // Coding rate
-    int pl = -1;       // Preamble length
+    long pl = -1;      // Preamble length
     int sw = -1;       // Sync word
     long fr = -1;      // Frequency
     long bw = -1;      // Bandwidth
