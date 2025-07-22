@@ -36,6 +36,30 @@ Local Nodes
 Sensors/Actuators
 ```
 
+## Directory Structure
+
+```
+smartAgriLora/
+├── src/                    # Core project source code
+│   ├── *.cpp              # C++ implementation files (core functionality)
+│   └── *.h                # Header files (core interfaces)
+├── analysis/               # Analysis and demonstration code
+│   ├── comprehensive_analysis.cpp    # Complete system analysis
+│   ├── deployment_comparison.cpp     # Deployment scenario comparisons
+│   ├── power_analysis.cpp/h          # Power consumption analysis
+│   └── power_demo.cpp               # Power optimization demonstrations
+├── docs/                   # Documentation and reports
+│   ├── *.pdf              # Technical reports and datasheets
+│   └── *.tex              # LaTeX source files
+├── latex-artifacts/        # LaTeX compilation artifacts
+│   └── *.aux, *.log, etc. # Generated files from LaTeX compilation
+├── images/                 # Project images and logos
+│   └── *.png              # Image files
+├── README.md               # This file
+├── LICENSE                 # GNU GPL v3.0 license
+└── .gitignore             # Git ignore rules
+```
+
 ## Core Components
 
 ### Communication Layer
@@ -111,7 +135,10 @@ Sensors/Actuators
 - PROGMEM usage for static data (alert descriptions and colors)
 
 ## Documentation
-Documentation including datasheets, reports, and references will be updated soon.
+- Technical documentation and analysis reports are available in the `docs/` folder
+- Power consumption analysis and system comparisons are in the `analysis/` folder
+- LaTeX source files and generated PDFs provide comprehensive technical specifications
+- SX1276/SX1278 datasheet is included for hardware reference
 
 ## Development Roadmap
 
