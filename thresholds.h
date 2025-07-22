@@ -1,8 +1,8 @@
 struct Thresholds{
-    float lowTemperature = -100.0f;
-    float highTemperature = -100.0f;
-    float lowHumidity = -100.0f;
-    float highHumidity = -100.0f;
-    float lowSoilMoisture = -100.0f;
-    float highSoilMoisture = -100.0f;
+    float lowTemperature;   // Temperature in Celsius
+    float highTemperature;  // Temperature in Celsius
+    float lowHumidity;      // Humidity in percentage
+    float highHumidity;     // Humidity in percentage
+    float lowSoilMoisture;  // Soil moisture as raw ADC value (0-1023)
+    float highSoilMoisture; // Soil moisture as raw ADC value (0-1023)
 };

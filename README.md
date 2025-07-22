@@ -7,18 +7,22 @@ The Smart Agriculture Monitoring System is designed to efficiently monitor agric
 ## Current Implementation Status
 
 ### ✅ Completed Components
-- **data_alert.cpp** - Alert system for agricultural data monitoring
-- **data_collector.cpp** - Data collection module for sensor readings
-- **lora_receiver.cpp** - LoRa receiver implementation for data reception
+- **data__alert.cpp** - Advanced 16-bit bitfield alert system with 25 unique colors and agricultural combinations
+- **data_collector.cpp** - Optimized data collection module for sensor readings (DHT11 + soil moisture)
+- **lora_receiver.cpp** - LoRa receiver implementation with memory-optimized decode functions
+- **lora_sender.cpp** - LoRa sender implementation for data transmission with compressed payloads
+- **config_manager.cpp** - Configuration management with India-compliant 865MHz frequency
+- **local_node.cpp** - Local node implementation with sensor integration and LoRa communication
+- **Header files** - Complete struct definitions and class interfaces for all components
 
-### 🚧 In Progress
-- **lora_sender.cpp** - LoRa sender implementation for data transmission
-- **lora_receiver.cpp** - Updates and improvements to existing receiver
+### � In Progress
+- **System integration testing** - Validation of complete communication chain
+- **Power optimization** - Fine-tuning for battery-powered deployment
 
 ### 📋 Planned Implementation
-- **local_node.cpp** - Local node implementation utilizing LoRa sender/receiver
-- **sublocal_node.cpp** - Sublocal node for intermediate data processing
-- **central_node.cpp** - Central node for data aggregation and control
+- **sublocal_node.cpp** - Sublocal node for intermediate data processing and routing
+- **central_node.cpp** - Central node for data aggregation and cloud integration
+- **web_interface.cpp** - Web dashboard for real-time monitoring and control
 
 ## System Architecture
 The system follows a hierarchical communication structure:
@@ -35,25 +39,32 @@ Sensors/Actuators
 ## Core Components
 
 ### Communication Layer
-- **LoRa Sender**: Handles message transmission with LoRa object parameter
-- **LoRa Receiver**: Manages incoming LoRa communications
-- **Message Protocol**: Standardized communication format between nodes
+- **LoRa Sender**: Handles message transmission with compressed payload encoding
+- **LoRa Receiver**: Manages incoming LoRa communications with memory-optimized decoding
+- **Message Protocol**: Standardized communication format with 4 message types (DATA, CONFIG, THRESHOLDS, SENDFAIL)
+- **Config Manager**: Manages LoRa parameters and sensor thresholds with validation
 
 ### Node Hierarchy
-- **Local Nodes**: Direct sensor interface and basic data processing
-- **Sublocal Nodes**: Intermediate data aggregation and routing
-- **Central Node**: Main control center for system coordination
+- **Local Nodes**: Direct sensor interface with DHT11 and soil moisture sensors
+- **Sublocal Nodes**: Intermediate data aggregation and routing (planned)
+- **Central Node**: Main control center for system coordination (planned)
 
 ### Data Management
-- **Data Collector**: Sensor data acquisition and preprocessing
-- **Data Alert**: Alert system for critical conditions and thresholds
+- **Data Collector**: Sensor data acquisition with hardware abstraction
+- **Alert System**: Advanced 16-bit bitfield system with agricultural context-aware colors
+- **Memory Optimization**: Reference-based parameter passing to minimize memory usage
 
 ## Features
-- Long-range communication using LoRa technology
-- Hierarchical node structure for scalable deployment
-- Efficient resource utilization
-- Real-time agricultural monitoring
-- Alert system for critical conditions
+- **Long-range communication** using LoRa technology (865MHz for India compliance)
+- **Hierarchical node structure** for scalable deployment
+- **Memory-optimized code** with reference-based parameter passing
+- **Compressed data transmission** for efficient bandwidth usage
+- **Real-time agricultural monitoring** with DHT11 and soil moisture sensors
+- **Advanced alert system** with 16-bit bitfield and 25 unique colors for agricultural conditions
+- **Smart color logic** - appropriate colors for seasonal conditions vs critical system alerts
+- **Adaptive LoRa parameters** based on communication range requirements
+- **Round-robin addressing** for load balancing across multiple destinations
+- **Error handling and recovery** with automatic parameter adjustment
 
 ## Getting Started
 1. Set up Arduino IDE with LoRa library
@@ -69,20 +80,65 @@ Sensors/Actuators
 
 ## Software Dependencies
 - Arduino IDE
-- LoRa library
-- Additional sensor libraries (as required)
+- LoRa library (for SX1276/SX1278 modules)
+- DHT sensor library (for DHT11 temperature/humidity sensor)
+- Standard Arduino libraries (Wire, SPI)
+
+## Technical Specifications
+
+### Communication Protocol
+- **Frequency**: 865MHz (India ISM band compliant)
+- **Modulation**: LoRa with configurable SF7-SF12
+- **Bandwidth**: 125kHz standard, adjustable for range optimization
+- **Message Types**: DATA, CONFIG, THRESHOLDS, SENDFAIL
+- **Payload Compression**: 32-bit compressed sensor data transmission
+
+### Sensor Support
+- **Temperature**: DHT11 (-40°C to +80°C, ±2°C accuracy)
+- **Humidity**: DHT11 (5% to 95% RH, ±5% accuracy)
+- **Soil Moisture**: Analog sensor with 10-bit ADC (0-1023 raw values)
+
+### Alert System
+- **16-bit Bitfield**: Efficient alert representation with bitwise operations
+- **25 Unique Colors**: Context-aware colors for agricultural and system conditions
+- **Agricultural Combinations**: Predefined colors for seasonal conditions (summer heat, drought, etc.)
+- **Priority System**: Critical system alerts override normal environmental conditions
+- **Memory Efficient**: PROGMEM storage for static data, buffer-based functions
+
+### Memory Optimization
+- Reference-based parameter passing eliminates unnecessary object copying
+- Compressed payload reduces transmission bandwidth
+- PROGMEM usage for static data (alert descriptions and colors)
 
 ## Documentation
 Documentation including datasheets, reports, and references will be updated soon.
 
 ## Development Roadmap
-1. Complete LoRa sender implementation
-2. Enhance LoRa receiver functionality
-3. Implement local node structure
-4. Develop sublocal node communication
-5. Create central node control system
-6. Add comprehensive documentation
-7. System testing and optimization
+
+### Phase 1: Core Components (✅ Complete)
+1. ✅ LoRa communication layer (sender/receiver)
+2. ✅ Data collection and sensor integration
+3. ✅ Local node implementation
+4. ✅ Memory optimization and buffer management
+5. ✅ India frequency compliance (865MHz)
+
+### Phase 2: Network Layer (🚧 In Progress)
+1. 🚧 System integration testing
+2. 🚧 Power optimization for battery operation
+3. 📋 Sublocal node implementation
+4. 📋 Multi-hop routing protocol
+
+### Phase 3: Central System (📋 Planned)
+1. 📋 Central node data aggregation
+2. 📋 Web interface and dashboard
+3. 📋 Database integration
+4. 📋 Real-time alert notifications
+
+### Phase 4: Advanced Features (📋 Future)
+1. 📋 Over-the-air firmware updates
+2. 📋 Mesh networking capabilities
+3. 📋 Machine learning for predictive analytics
+4. 📋 Mobile application interface
 
 ## Contributing
 Contributions are welcome! Please ensure code follows the established architecture and communication protocols.

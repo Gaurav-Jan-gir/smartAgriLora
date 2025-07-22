@@ -6,6 +6,6 @@
 #define DHTTYPE DHT11         // Change to DHT22 if using that sensor
 #define SOIL_PIN A0           // Analog pin for soil moisture
 
-DHT dht(DHTPIN, DHTTYPE); // DHT sensor object
+extern DHT dht; // Declare external DHT object (defined in .cpp)
 
-SensorData get_sensor_data();
+void get_sensor_data(SensorData& data);  // Modified to take reference parameter
